@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Previsão do Tempo - Brasil</title>
+    <style>
+       
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            gap: 2rem;
+        }
+       
+        .login-form {
+            background-color: #333;
+            color: #fff;
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+       
+        .login-form input,
+        .login-form button {
+            display: block;
+            width: 100%;
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            border: none;
+            border-radius: 5px;
+        }  
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            transition: background-color 0.5s, color 0.5s;
+        }
+       
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            gap: 2rem;
+        }
+       
+        .toggle-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            font-size: 14px;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.5s, color 0.5s;
+        }
+       
+        .weather-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+       
+        .weather-card {
+            background-color: #333;
+            color: #fff;
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+       
+        .weather-card .temperature {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+       
+        .weather-card .weather-description {
+            font-size: 1.2rem;
+            color: #ccc;
+            margin-bottom: 2rem;
+        }
+       
+        .weather-card .weather-icon {
+            width: 5rem;
+            height: 5rem;
+            margin-bottom: 1rem;
+        }
+       
+        .weather-card .current-time {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 14px;
+            color: #ccc;
+        }
+    </style>
+</head>
+<body id="body">
+    <div id="login-container" class="login-container">
+        <h2>Faça o login</h2>
+        <form id="login-form" class="login-form">
+            <label for="email">E-mail:</label>
+            <input type="email" id="email" name="email" required>
+            <label for="password">Senha:</label>
+            <input type="password" id="password" name="password" required>
+            <button type="submit">Entrar</button>
+        </form>
+    </div>
+
+
+    <div id="weather-container" class="weather-container" style="display: none;">
+        <div class="container">
+            <div class="weather-cards" id="weather-cards">
+            </div>
+        </div>
+       
+        <button class="toggle-button" onclick="toggleDarkMode()">Modo Noturno</button>
+    </div>
+
+
+    <script>
+        var loginContainer = document.getElementById('login-container');
+        var weatherContainer = document.getElementById('weather-container');
+        var loginForm = document.getElementById('login-form');
+
+
+        loginForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+           
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+            if (email === 'admin@example.com' && password === 'password') {
+                loginContainer.style.display = 'none';
+                weatherContainer.style.display = 'block';
+                fetchWeatherData();
+            } else {
+                alert('E-mail ou senha inválidos. Tente novamente.');
+            }
+        });
+
+
+        function toggleDarkMode() {
+            var body = document.getElementById("body");
+            body.classList.toggle("dark-mode");
+           
+            if (body.classList.contains("dark-mode")) {
+                body.style.backgroundColor = "#333";
+                body.style.color = "#fff";
+                document.querySelector(".toggle-button").style.backgroundColor = "#555";
+                document.querySelector(".toggle-button").style.color = "#fff";
+                var weatherCards = document.querySelectorAll(".weather-card");
+                weatherCards.forEach(function(card) {
+                    card.style.backgroundColor = "#444";
+                });
+            } else {
+                body.style.backgroundColor = "#fff";
+                body.style.color = "#333";
+                document.querySelector(".toggle-button").style.backgroundColor = "#eee";
+                document.querySelector(".toggle-button").style.color = "#333";
+                var weatherCards = document.querySelectorAll(".weather-card");
+                weatherCards.forEach(function(card) {
+                    card.style.backgroundColor = "#333";
+                });
+            }
+        }
+
+
+        function fetchWeatherData() {
+            var weatherCards = document.getElementById("weather-cards");
+            var cities = ["São Paulo", "Rio de Janeiro", "Brasília", "Belo Horizonte", "Recife"];
+            cities.forEach(function(city) {
+                var card = document.createElement("div");
+                card.classList.add("weather-card");
+                card.innerHTML = `
+                    <img src="weather-icon.svg" alt="Weather Icon" class="weather-icon">
+                    <div class="temperature">27° / 19°</div>
+                    <div class="weather-description">${city}</div>
+                    <div class="current-time">${getCurrentTime()}</div>
+                `;
+                weatherCards.appendChild(card);
+            });
+        }
+
+
+        function getCurrentTime() {
+            var currentDate = new Date();
+            var hours = currentDate.getHours().toString().padStart(2, '0');
+            var minutes = currentDate.getMinutes().toString().padStart(2, '0');
+            return `${hours}:${minutes}`;
+        }
+
+
+        fetchWeatherData();
+    </script>
+</body>
+</html>
